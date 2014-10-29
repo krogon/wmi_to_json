@@ -21,7 +21,7 @@ powershell.exe -NoProfile -NoLogo -File "<full path to script directory>\wmi_dis
 Example Usage
 
 ```
-powershell -NoProfile -NoLogo -File "D:\krogon\wmi_discovery.ps1" "root/cimv2" "Select Name, LogFilesSizeKB, LogTruncations from Win32_PerfFormattedData_MsSqlServer_SqlServerDatabases where not Name like '%_repl%'"
+powershell -NoProfile -NoLogo -File "D:\krogon\wmi_discovery.ps1" "root/cimv2" "Select Name, LogFilesSizeKB, LogTruncations from Win32_PerfFormattedData_MsSqlServer_SqlServerDatabases where Name not like '%_repl%'"
 ```
 
 Zabbix Discovery Configuration
@@ -35,6 +35,7 @@ Zabbix Discovery Configuration
   EnableRemoteCommands=1
   UnsafeUserParameters=1
   UserParameter=custom.mssql_db_discover[*],powershell.exe -NoProfile -NoLogo -File "C:\devtools\zabbix\scripts\wmi_discovery.ps1" "root/cimv2" "SELECT Name FROM Win32_PerfFormattedData_MsSqlServer_SqlServerDatabases WHERE Name != '_Total' $1"
+  UserParameter=custom.mssql_db_discover_custom[*],powershell.exe -NoProfile -NoLogo -File "C:\devtools\zabbix\scripts\wmi_discovery.ps1" "root/cimv2" "SELECT Name FROM Win32_PerfFormattedData_MsSql$2_MsSql$2Databases WHERE Name != '_Total' $1"
   ```
 
 * Restart Zabbix Agent service
@@ -57,5 +58,6 @@ Zabbix Discovery Configuration
   
   ```
   custom.mssql_db_discover["{$MSSQL_WQL_WHERE_GLOBAL} {$MSSQL_WQL_WHERE}"]
+  custom.mssql_db_discover_custom["{$MSSQL_WQL_WHERE_GLOBAL} {$MSSQL_WQL_WHERE}", "{$MSSQLINSTANCE}"]
   ```
 
